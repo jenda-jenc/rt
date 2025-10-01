@@ -4,9 +4,10 @@ namespace App\Controller;
 
 use App\Http\Request;
 use App\Repositories\AdminUserRepository;
-use App\Repositories\ContactRepository;
+use App\Repositories\ContactInfoRepository;
 use App\Repositories\EventRepository;
 use App\Repositories\GalleryItemRepository;
+use App\Repositories\ReservationRepository;
 use App\Repositories\PageRepository;
 use App\Security\CsrfTokenManager;
 
@@ -18,7 +19,8 @@ class AdminController extends AbstractController
         private readonly AdminUserRepository $userRepository = new AdminUserRepository(),
         private readonly EventRepository $eventRepository = new EventRepository(),
         private readonly GalleryItemRepository $galleryRepository = new GalleryItemRepository(),
-        private readonly ContactRepository $contactRepository = new ContactRepository(),
+        private readonly ReservationRepository $reservationRepository = new ReservationRepository(),
+        private readonly ContactInfoRepository $contactInfoRepository = new ContactInfoRepository(),
         private readonly PageRepository $pageRepository = new PageRepository()
     ) {
         if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -91,7 +93,8 @@ class AdminController extends AbstractController
         return $this->render('admin/dashboard.php', [
             'events' => $events,
             'galleryItems' => $galleryItems,
-            'contacts' => $this->contactRepository->all(),
+            'reservations' => $this->reservationRepository->all(),
+            'contactInfo' => $this->contactInfoRepository->get(),
             'pages' => $pages,
             'eventToEdit' => $eventToEdit,
             'galleryToEdit' => $galleryToEdit,
@@ -165,15 +168,38 @@ class AdminController extends AbstractController
         return '';
     }
 
-    public function deleteContact(Request $request): string
+    public function deleteReservation(Request $request): string
     {
         $this->assertAuthenticated();
         $this->guardCsrf($request);
 
         $id = (int) $request->request('id');
         if ($id > 0) {
-            $this->contactRepository->delete($id);
+            $this->reservationRepository->delete($id);
         }
+
+        header('Location: /admin');
+        return '';
+    }
+
+    public function saveContactInfo(Request $request): string
+    {
+        $this->assertAuthenticated();
+        $this->guardCsrf($request);
+
+        $data = [
+            'phone' => trim((string) $request->request('phone')),
+            'email' => trim((string) $request->request('email')),
+            'facebook' => trim((string) $request->request('facebook')),
+            'address' => trim((string) $request->request('address')),
+            'reservation_note' => trim((string) $request->request('reservation_note')),
+        ];
+
+        foreach ($data as $key => $value) {
+            $data[$key] = $value === '' ? null : $value;
+        }
+
+        $this->contactInfoRepository->save($data);
 
         header('Location: /admin');
         return '';

@@ -24,7 +24,8 @@ $router->post('/events/save', fn () => $controller->saveEvent($request));
 $router->post('/events/delete', fn () => $controller->deleteEvent($request));
 $router->post('/gallery/save', fn () => $controller->saveGalleryItem($request));
 $router->post('/gallery/delete', fn () => $controller->deleteGalleryItem($request));
-$router->post('/contacts/delete', fn () => $controller->deleteContact($request));
+$router->post('/reservations/delete', fn () => $controller->deleteReservation($request));
+$router->post('/contact-info/save', fn () => $controller->saveContactInfo($request));
 $router->post('/pages/save', fn () => $controller->savePage($request));
 
 $response = $router->dispatch($request);

@@ -16,8 +16,9 @@ $description = $page['content'] ?? 'Hudební klub v srdci města.';
     <div class="container">
         <nav class="nav" aria-label="Hlavní navigace">
             <div class="brand">
-                <div class="logo"><img src="/assets/img/logo.svg" alt="Riko Klub"></div>
-                <span>Riko Klub</span>
+                <div class="logo" aria-label="Riko Music Club">
+                    <img src="/assets/img/logo.svg" alt="Riko Music Club" />
+                </div>
             </div>
             <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
             <div class="links">

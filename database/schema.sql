@@ -29,12 +29,24 @@ CREATE TABLE IF NOT EXISTS gallery_items (
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS contacts (
+CREATE TABLE IF NOT EXISTS reservations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
+    phone VARCHAR(120),
+    event_date DATE,
     message TEXT NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS contact_info (
+    id INTEGER PRIMARY KEY,
+    phone VARCHAR(120),
+    email VARCHAR(255),
+    facebook VARCHAR(255),
+    address TEXT,
+    reservation_note TEXT,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS admin_users (
@@ -56,6 +68,9 @@ INSERT OR IGNORE INTO gallery_items (id, title, image_path, description, positio
     (1, 'Bar', 'https://picsum.photos/seed/riko1/800/600', 'Atmosféra našeho baru.', 1),
     (2, 'Koncert', 'https://picsum.photos/seed/riko2/800/600', 'Momentka z koncertu.', 2),
     (3, 'Hosté', 'https://picsum.photos/seed/riko3/800/600', 'Pohodová nálada.', 3);
+
+INSERT OR IGNORE INTO contact_info (id, phone, email, facebook, address, reservation_note) VALUES
+    (1, '+420 777 123 456', 'info@riko-klub.cz', 'https://facebook.com/rikomusicclub', 'Dominikánská 12\n602 00 Brno', 'Uveďte prosím termín, přibližný počet hostů a požadovaný program.');
 
 INSERT OR IGNORE INTO admin_users (id, username, password_hash) VALUES
     (1, 'admin', '$2y$10$mmRSu1cWmvMRGsiE9zMDFuFXl8vLwTkx2UY8ailqXFz3vGN9VOGBe');

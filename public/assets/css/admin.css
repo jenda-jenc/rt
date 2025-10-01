@@ -37,6 +37,11 @@ body.admin {
   margin-top: 0;
 }
 
+.admin-card h3 {
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
 .admin-card table {
   width: 100%;
   border-collapse: collapse;
@@ -90,12 +95,22 @@ body.admin {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .simple-list li span {
   color: var(--muted);
   font-size: 14px;
+  display: block;
+  margin-top: 4px;
+}
+
+.simple-list li p {
+  margin: 6px 0 0;
+  color: var(--text);
+  max-width: 540px;
+  line-height: 1.5;
 }
 
 .alert {

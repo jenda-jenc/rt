@@ -55,27 +55,26 @@ header {
 }
 
 .brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 700;
-  letter-spacing: .4px;
   grid-column: 2;
   justify-self: center;
 }
 
 .brand .logo {
-  width: 60px;
-  height: 60px;
+  width: 72px;
+  height: 72px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, .18);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, .05);
+  background: #050608;
 }
 
 .brand .logo img {
-  height: 60px;
-  width: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
@@ -293,6 +292,103 @@ h2 {
   box-shadow: var(--shadow);
 }
 
+.alert {
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  border: 1px solid rgba(124, 200, 255, .35);
+  background: rgba(124, 200, 255, .12);
+  color: var(--text);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.alert strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  align-items: stretch;
+}
+
+.contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.contact-card h3 {
+  margin: 0;
+}
+
+.contact-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.contact-card .contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.contact-card .contact-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-card .contact-list .label {
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.contact-card .contact-list a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.contact-card .contact-list a:hover {
+  text-decoration: underline;
+}
+
+.reservation-card h3 {
+  margin-top: 0;
+}
+
+.reservation-card form {
+  display: grid;
+  gap: 12px;
+}
+
+.reservation-card .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.reservation-card .form-row label {
+  margin-bottom: 0;
+}
+
+.reservation-card button {
+  justify-self: start;
+}
+
+.reservation-note {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: -4px;
+}
+
 .form-group,
 label {
   display: block;
@@ -325,6 +421,11 @@ footer {
     grid-template-columns: 1fr auto;
   }
 
+  .brand .logo {
+    width: 60px;
+    height: 60px;
+  }
+
   .links {
     display: none;
   }
@@ -339,5 +440,9 @@ footer {
 
   .event .meta {
     justify-content: flex-start;
+  }
+
+  .contact-layout {
+    grid-template-columns: 1fr;
   }
 }

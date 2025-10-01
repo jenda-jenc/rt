@@ -107,26 +107,60 @@
     </article>
 
     <article class="admin-card">
-        <h2>Kontakty</h2>
-        <?php if (!empty($contacts)): ?>
+        <h2>Kontakt &amp; rezervace</h2>
+        <form method="post" action="/admin/contact-info/save" class="stacked">
+            <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf) ?>">
+            <div class="form-row">
+                <label>Telefon
+                    <input type="text" name="phone" value="<?= htmlspecialchars($contactInfo['phone'] ?? '') ?>" placeholder="+420 777 123 456">
+                </label>
+                <label>E-mail
+                    <input type="email" name="email" value="<?= htmlspecialchars($contactInfo['email'] ?? '') ?>" placeholder="info@riko-klub.cz">
+                </label>
+                <label>Facebook
+                    <input type="url" name="facebook" value="<?= htmlspecialchars($contactInfo['facebook'] ?? '') ?>" placeholder="https://facebook.com/rikomusicclub">
+                </label>
+            </div>
+            <label>Adresa
+                <textarea name="address" rows="2" placeholder="Dominikánská 12&#10;602 00 Brno"><?= htmlspecialchars($contactInfo['address'] ?? '') ?></textarea>
+            </label>
+            <label>Poznámka k rezervaci
+                <textarea name="reservation_note" rows="3" placeholder="Např. požadavek na techniku, časový harmonogram..."><?= htmlspecialchars($contactInfo['reservation_note'] ?? '') ?></textarea>
+            </label>
+            <button class="btn-primary" type="submit">Uložit kontaktní údaje</button>
+        </form>
+
+        <h3>Rezervace</h3>
+        <?php if (!empty($reservations)): ?>
             <ul class="simple-list">
-                <?php foreach ($contacts as $contact): ?>
+                <?php foreach ($reservations as $reservation): ?>
                     <li>
                         <div>
-                            <strong><?= htmlspecialchars($contact['name']) ?></strong>
-                            <span><?= htmlspecialchars($contact['email']) ?></span>
-                            <p><?= nl2br(htmlspecialchars($contact['message'])) ?></p>
+                            <strong><?= htmlspecialchars($reservation['name']) ?></strong>
+                            <span><?= htmlspecialchars($reservation['email']) ?></span>
+                            <?php if (!empty($reservation['phone'])): ?>
+                                <span><?= htmlspecialchars($reservation['phone']) ?></span>
+                            <?php endif; ?>
+                            <?php if (!empty($reservation['event_date'])): ?>
+                                <span>Termín: <?= htmlspecialchars($reservation['event_date']) ?></span>
+                            <?php endif; ?>
+                            <?php if (!empty($reservation['created_at'])): ?>
+                                <span>Vytvořeno: <?= htmlspecialchars($reservation['created_at']) ?></span>
+                            <?php endif; ?>
+                            <?php if (!empty($reservation['message'])): ?>
+                                <p><?= nl2br(htmlspecialchars($reservation['message'])) ?></p>
+                            <?php endif; ?>
                         </div>
-                        <form method="post" action="/admin/contacts/delete" class="inline">
+                        <form method="post" action="/admin/reservations/delete" class="inline">
                             <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf) ?>">
-                            <input type="hidden" name="id" value="<?= (int) $contact['id'] ?>">
+                            <input type="hidden" name="id" value="<?= (int) $reservation['id'] ?>">
                             <button type="submit">Smazat</button>
                         </form>
                     </li>
                 <?php endforeach; ?>
             </ul>
         <?php else: ?>
-            <p>Zatím žádné zprávy.</p>
+            <p>Zatím žádné rezervace.</p>
         <?php endif; ?>
     </article>
 

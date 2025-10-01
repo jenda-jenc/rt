@@ -1,6 +1,14 @@
 <?php
 use App\Security\CsrfTokenManager;
 $csrf = CsrfTokenManager::getToken();
+$contactInfo = array_merge([
+    'phone' => '',
+    'email' => '',
+    'facebook' => '',
+    'address' => '',
+    'reservation_note' => '',
+], $contactInfo ?? []);
+$reservationSuccess = !empty($reservationSuccess);
 ?>
 <section class="hero">
     <div class="container">
@@ -70,22 +78,77 @@ $csrf = CsrfTokenManager::getToken();
 
 <section id="kontakt">
     <div class="container">
-        <h2>Kontaktujte nás</h2>
-        <form method="post" action="/kontakt/odeslat" class="card">
-            <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf) ?>" />
-            <div class="form-group">
-                <label for="name">Jméno</label>
-                <input type="text" id="name" name="name" required>
+        <h2>Kontakt &amp; rezervace</h2>
+        <?php if ($reservationSuccess): ?>
+            <div class="alert">
+                <strong>Rezervace odeslána</strong>
+                Děkujeme, ozveme se vám s potvrzením co nejdříve.
             </div>
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required>
+        <?php endif; ?>
+        <div class="contact-layout">
+            <div class="contact-card card">
+                <h3>Ozvěte se nám</h3>
+                <?php $hasContactInfo = $contactInfo['phone'] || $contactInfo['email'] || $contactInfo['facebook'] || $contactInfo['address']; ?>
+                <?php if ($hasContactInfo): ?>
+                    <ul class="contact-list">
+                        <?php if ($contactInfo['phone']): ?>
+                            <?php $telLink = preg_replace('/[^0-9+]/', '', $contactInfo['phone']); ?>
+                            <li>
+                                <span class="label">Telefon</span>
+                                <a href="tel:<?= htmlspecialchars($telLink) ?>"><?= htmlspecialchars($contactInfo['phone']) ?></a>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($contactInfo['email']): ?>
+                            <li>
+                                <span class="label">E-mail</span>
+                                <a href="mailto:<?= htmlspecialchars($contactInfo['email']) ?>"><?= htmlspecialchars($contactInfo['email']) ?></a>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($contactInfo['facebook']): ?>
+                            <li>
+                                <span class="label">Facebook</span>
+                                <a href="<?= htmlspecialchars($contactInfo['facebook']) ?>" target="_blank" rel="noreferrer noopener"><?= htmlspecialchars($contactInfo['facebook']) ?></a>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($contactInfo['address']): ?>
+                            <li>
+                                <span class="label">Adresa</span>
+                                <span><?= nl2br(htmlspecialchars($contactInfo['address'])) ?></span>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                <?php else: ?>
+                    <p>Kontakt doplňte v administraci a zobrazí se zde.</p>
+                <?php endif; ?>
             </div>
-            <div class="form-group">
-                <label for="message">Zpráva</label>
-                <textarea id="message" name="message" rows="4" required></textarea>
+            <div class="reservation-card card">
+                <h3>Rezervace akce v klubu</h3>
+                <form method="post" action="/rezervace/odeslat">
+                    <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf) ?>" />
+                    <div class="form-row">
+                        <label for="reservation-name">Jméno
+                            <input type="text" id="reservation-name" name="name" required>
+                        </label>
+                        <label for="reservation-email">E-mail
+                            <input type="email" id="reservation-email" name="email" required>
+                        </label>
+                    </div>
+                    <div class="form-row">
+                        <label for="reservation-phone">Telefon
+                            <input type="tel" id="reservation-phone" name="phone" placeholder="+420 ...">
+                        </label>
+                        <label for="reservation-date">Preferovaný termín
+                            <input type="date" id="reservation-date" name="event_date">
+                        </label>
+                    </div>
+                    <label for="reservation-message">Detaily akce</label>
+                    <textarea id="reservation-message" name="message" rows="4" placeholder="Kolik hostů čekáte a jaký typ programu preferujete?" required></textarea>
+                    <button type="submit" class="btn-primary">Odeslat poptávku</button>
+                    <?php if ($contactInfo['reservation_note']): ?>
+                        <p class="reservation-note"><?= nl2br(htmlspecialchars($contactInfo['reservation_note'])) ?></p>
+                    <?php endif; ?>
+                </form>
             </div>
-            <button type="submit" class="btn-primary">Odeslat zprávu</button>
-        </form>
+        </div>
     </div>
 </section>
