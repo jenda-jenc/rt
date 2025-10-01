@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="cs">
+<head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <title>Riko Klub – Statický web (náhled)</title>
+ <meta name="description" content="web rikoklub: adresa, kontakt, galerie, PDF menu." />
+ <style>
+  :root{
+   --bg:#0d1016;
+   --card:#131826;
+   --muted:#9aa3b2;
+   --text:#f3f6ff;
+   --brand:#7cc8ff;
+   --accent:#b3f2ff;
+   --radius:18px;
+   --shadow:0 10px 30px rgba(0,0,0,.35);
+   --black:#000;
+   --right-col: clamp(120px, 30vw, 220px);
+   --header-h: 74px;
+  }
+  *{box-sizing:border-box}
+  body{
+   margin:0; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";
+   color:var(--text);
+   background:linear-gradient(180deg,var(--bg) 0%, #0b0e14 100%);
+  }
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .container{max-width:1100px; margin:0 auto; padding:0 20px}
+
+  /* Header – absolutně černý */
+  header{
+   position:sticky; top:0; z-index:100;
+   background:var(--black); border-bottom:1px solid var(--black);
+  }
+  .nav{
+   height:var(--header-h);
+   display:grid; grid-template-columns: 1fr auto 1fr;
+   align-items:center; gap:12px;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.4px; grid-column:2; justify-self:center; }
+  .brand .logo{ width:160px; height:160px; display:grid; place-items:center; border-radius:50%; overflow:hidden; }
+  .brand .logo img{ height:160px; width:auto; display:block; }
+
+  .links{
+   grid-column:3; justify-self:end; display:flex; gap:18px; align-items:center;
+  }
+  .links a{ color:#fff; opacity:.95; }
+  .links a:hover{ opacity:1; text-decoration:none; }
+
+  /* Desktop „Menu“ už nepoužíváme; tlačítko pro mobily */
+  .menu-toggle{
+   display:none; /* zobrazíme v @media */
+   grid-column:3; justify-self:end;
+   background:#000; color:#fff;
+   border:1px solid #222; border-radius:14px;
+   padding:10px 14px; font-weight:600; cursor:pointer;
+  }
+  .menu-toggle:hover{ border-color:#444; }
+
+  /* Mobile menu panel */
+  .mobile-menu{
+   position:fixed; left:0; right:0; top:var(--header-h);
+   background:#000; border-top:1px solid #111;
+   display:flex; flex-direction:column; gap:2px;
+   padding:8px 12px 16px;
+   transform:translateY(-8px); opacity:0; pointer-events:none;
+   transition:transform .18s ease, opacity .18s ease;
+  }
+  .mobile-menu.open{
+   transform:translateY(0); opacity:1; pointer-events:auto;
+  }
+  .mobile-menu a{
+   color:#fff; text-decoration:none; padding:12px 8px;
+   border-radius:10px;
+  }
+  .mobile-menu a:hover{ background:#0b0b0b; }
+
+  /* Hero */
+  .hero{padding:48px 0 36px}
+  .hero .wrap{display:grid;}
+  .hero-card{background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow)}
+  .hero h1{font-size:40px; line-height:1.15; margin:0 0 10px}
+  .hero p{color:var(--muted); margin:0 0 16px}
+  .cta-row{display:flex; gap:12px; flex-wrap:wrap}
+  .btn-primary{ background:linear-gradient(135deg,var(--brand),var(--accent)); color:#001018; border:none; border-radius:14px; padding:12px 16px; font-weight:700; box-shadow:var(--shadow) }
+
+  /* Sections */
+  section{padding:36px 0}
+  h2{font-size:24px; margin:0 0 14px}
+  .card{background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
+
+  /* Grid */
+  .grid{display:grid; gap:18px}
+  .grid-2{grid-template-columns:repeat(2,1fr)}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:920px){ .grid-2{grid-template-columns:1fr} }
+
+  /* Program – název uprostřed, pravé štítky */
+  .program-month{display:grid; gap:12px}
+  .events{list-style:none; margin:0; padding:0}
+
+  .event{
+   display:grid;
+   grid-template-columns: auto 1fr var(--right-col); /* datum | název (střed) | pravý blok */
+   align-items:center;
+   column-gap:16px; row-gap:6px;
+   padding:12px 14px;
+   border:1px solid rgba(255,255,255,.06);
+   border-radius:12px;
+   background:#101523;
+  }
+  .event .title{
+   color:var(--text); text-align:center; justify-self:center;
+   white-space:normal; overflow:visible;
+   word-break: normal; overflow-wrap: break-word; line-height:1.25; min-width:0;
+  }
+  .event .when{ font-weight:700; letter-spacing:.2px; white-space:nowrap; }
+
+  .event-right{
+   display:flex; gap:8px; align-items:center;
+   justify-self:end; text-align:right; min-width:var(--right-col);
+   flex-wrap:wrap;
+  }
+  .badge{
+   font-size:12px; color:#0a141a;
+   background:linear-gradient(135deg,var(--brand),var(--accent));
+   border-radius:999px; padding:4px 8px; font-weight:700; white-space:nowrap;
+  }
+  .badge--ghost{ background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,.18); }
+  .badge a{ color:inherit; text-decoration:none; }
+  .badge a:hover{ text-decoration:underline; }
+  .event[hidden]{display:none !important}
+
+  /* MOBIL – zmenšené logo, hamburger, menu panel; vpravo štítky pod sebe */
+  @media (max-width:860px){
+    :root{ --header-h: 64px; }
+    .brand .logo{ width:120px; height:120px; }
+    .brand .logo img{ height:120px; }
+    .links{ display:none; }
+    .menu-toggle{ display:inline-flex; align-items:center; gap:8px; }
+    .event-right{ flex-direction:column; align-items:flex-end; gap:6px; }
+    :root{ --right-col: clamp(96px, 26vw, 140px); }
+  }
+  @media (max-width:480px){
+    .brand .logo{ width:96px; height:96px; }
+    .brand .logo img{ height:96px; }
+    :root{ --header-h: 58px; }
+  }
+
+  /* PDF viewer – černé UI */
+  .pdf-wrap{background:#0b0f18; border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+  .pdf-toolbar{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 14px; background:#000; color:#fff; border-bottom:1px solid #000; }
+  .pdf-toolbar a.btn{padding:8px 12px; border:1px solid #222; border-radius:10px; background:#000; color:#fff}
+  .pdf-toolbar a.btn:hover{border-color:#444}
+  .pdf-frame{width:100%; height:70vh; border:0; display:block; background:#000}
+
+  /* Galerie */
+  .gallery-wrap{display:grid; gap:16px}
+  .carousel{ position:relative; border-radius:16px; overflow:hidden; background:#0a0e16; border:1px solid rgba(255,255,255,.06); min-height:320px; }
+  .carousel img{ width:100%; height:520px; object-fit:cover; display:block; }
+  .carousel .nav{ position:absolute; inset:auto 0 0 0; display:flex; justify-content:space-between; gap:8px; background:linear-gradient(180deg, transparent, rgba(0,0,0,.55)); padding:10px; }
+  .carousel button{ background:rgba(0,0,0,.65); color:#fff; border:1px solid rgba(255,255,255,.18); border-radius:12px; padding:8px 12px; cursor:pointer; }
+  .carousel button:hover{ background:rgba(0,0,0,.8) }
+
+  .thumbs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:10px; }
+  .thumb{ position:relative; aspect-ratio:4/3; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,.06); background:#0d121c; cursor:pointer; }
+  .thumb img{width:100%; height:100%; object-fit:cover; display:block; opacity:.9}
+  .thumb.active{ outline:2px solid var(--brand); }
+  .thumb:hover img{opacity:1}
+
+  footer{padding:30px 0 60px; color:var(--muted)}
+ </style>
+</head>
+<body>
+<header>
+ <div class="container nav">
+  <div class="brand">
+   <div class="logo">
+    <img src="logo.png" id="riko-gray" alt="RIKO" loading="lazy">
+   </div>
+  </div>
+
+  <!-- Desktop odkazy -->
+  <nav class="links" aria-label="Hlavní">
+   <a href="#program">Program</a>
+   <a href="#adresa">Adresa</a>
+   <a href="#galerie">Galerie</a>
+   <a href="#menu" class="btn">Menu</a>
+  </nav>
+
+  <!-- Mobilní tlačítko -->
+  <button class="menu-toggle" aria-expanded="false" aria-controls="mobileMenu">
+    ☰ Menu
+  </button>
+ </div>
+
+ <!-- Mobilní menu panel -->
+ <nav id="mobileMenu" class="mobile-menu" aria-label="Hlavní (mobil)" hidden>
+   <a href="#program">Program</a>
+   <a href="#adresa">Adresa</a>
+   <a href="#galerie">Galerie</a>
+   <a href="#menu">Menu</a>
+ </nav>
+</header>
+
+<main class="container">
+ <!-- Hero -->
+ <section class="hero">
+  <div class="wrap">
+   <div class="hero-card">
+    <h1>RIKO HUDEBNÍ KLUB</h1>
+    <p>Klub RIKO je zpátky – místo, kde vládne kytarová muzika, živé koncerty a nezapomenutelná atmosféra. Přijď si užít večer plný energie a dobrého zvuku.</p>
+    <div class="cta-row">
+     <a class="btn-primary" href="tel:+420737501635">📞 +420&nbsp;737&nbsp;501&nbsp;635</a>
+     <a class="btn-primary" href="mailto:rikoklub@seznam.cz">📧 rikoklub@seznam.cz</a>
+     <a class="btn" style="padding: 8px; right: 0px" href="https://www.facebook.com/profile.php?id=61580093997281"
+        target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#1877F2" viewBox="0 0 24 24" aria-hidden="true">
+       <path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.406.595 24
+             1.325 24h11.495v-9.294H9.691v-3.622h3.129V8.413c0-3.1
+             1.894-4.788 4.659-4.788 1.325 0 2.463.099
+             2.795.143v3.24l-1.918.001c-1.504 0-1.796.715-1.796
+             1.763v2.31h3.587l-.467 3.622h-3.12V24h6.116C23.406
+             24 24 23.406 24 22.674V1.326C24 .592 23.406
+             0 22.675 0z"></path>
+      </svg>
+     </a>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <!-- Program -->
+ <section id="program">
+  <h2>Program</h2>
+
+  <!-- Říjen -->
+  <div class="program-month grid">
+   <h3 style="margin:0;color:var(--muted)">Říjen</h3>
+   <div class="card">
+    <ul class="events">
+     <li class="event">
+      <span class="when">24. 10.</span>
+      <span class="title">ELÁN REVIVAL</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost"><a href="https://elanrevival.eu">info</a></span>
+      </div>
+     </li>
+     <li class="event">
+      <span class="when">25. 10.</span>
+      <span class="title">HOLOKRCI</span>
+      <div class="event-right">
+       <span class="badge">vstup</span>
+       <span class="badge badge--ghost"><a href="https://holokrci.cz">info</a></span>
+      </div>
+     </li>
+     <li class="event">
+      <span class="when">30. 10.</span>
+      <span class="title">CO UŽ?</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost" hidden>21:00</span>
+      </div>
+     </li>
+     <li class="event">
+      <span class="when">31. 10.</span>
+      <span class="title">JAN JAREŠ</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost"><a href="https://janjares.cz">info</a></span>
+      </div>
+     </li>
+
+     <!-- Rezerva (skryté položky) -->
+     <li class="event" hidden>
+      <span class="when">__ . __</span><span class="title">Název akce</span>
+      <div class="event-right"><span class="badge">koncert</span><span class="badge badge--ghost" hidden>čas</span></div>
+     </li>
+     <li class="event" hidden>
+      <span class="when">__ . __</span><span class="title">Název akce</span>
+      <div class="event-right"><span class="badge">koncert</span><span class="badge badge--ghost" hidden>vstup</span></div>
+     </li>
+    </ul>
+   </div>
+  </div>
+
+  <!-- Listopad -->
+  <div class="program-month grid" style="margin-top:18px">
+   <h3 style="margin:0;color:var(--muted)">Listopad</h3>
+   <div class="card">
+    <ul class="events">
+     <li class="event">
+      <span class="when">7. 11.</span>
+      <span class="title">S ROCK</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost" hidden>21:00</span>
+      </div>
+     </li>
+     <li class="event">
+      <span class="when">8. 11.</span>
+      <span class="title">PETRA RÉZOVÁ</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost" hidden>21:00</span>
+      </div>
+     </li>
+     <li class="event">
+      <span class="when">14. 11.</span>
+      <span class="title">PRAMENY</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost" hidden>21:00</span>
+      </div>
+     </li>
+     <li class="event">
+      <span class="when">21. 11.</span>
+      <span class="title">RIVER STARS</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost" hidden>21:00</span>
+      </div>
+     </li>
+     <li class="event">
+      <span class="when">28. 11.</span>
+      <span class="title">HOLOKRCI</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost" hidden></span>
+      </div>
+     </li>
+
+     <!-- Rezerva -->
+     <li class="event" hidden>
+      <span class="when">__ . __</span><span class="title">Název akce</span>
+      <div class="event-right"><span class="badge">koncert</span><span class="badge badge--ghost" hidden>vstup</span></div>
+     </li>
+     <li class="event" hidden>
+      <span class="when">__ . __</span><span class="title">Název akce</span>
+      <div class="event-right"><span class="badge">koncert</span><span class="badge badge--ghost" hidden>čas</span></div>
+     </li>
+    </ul>
+   </div>
+  </div>
+
+  <!-- Prosinec -->
+  <div class="program-month grid" style="margin-top:18px">
+   <h3 style="margin:0;color:var(--muted)">Prosinec</h3>
+   <div class="card">
+    <ul class="events">
+     <li class="event">
+      <span class="when">6. 12.</span>
+      <span class="title">DAREBÁCI</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost" hidden>21:00</span>
+      </div>
+     </li>
+     <li class="event">
+      <span class="when">12. 12.</span>
+      <span class="title">LEAKERS</span>
+      <div class="event-right">
+       <span class="badge" hidden>koncert</span>
+       <span class="badge badge--ghost" hidden>21:00</span>
+      </div>
+     </li>
+
+     <!-- Rezerva -->
+     <li class="event" hidden>
+      <span class="when">20. 12.</span><span class="title">HOLOKRCI</span>
+      <div class="event-right"><span class="badge">koncert</span><span class="badge badge--ghost" hidden>21:00</span></div>
+     </li>
+     <li class="event" hidden>
+      <span class="when">__ . __</span><span class="title">Název akce</span>
+      <div class="event-right"><span class="badge">koncert</span><span class="badge badge--ghost" hidden>vstup</span></div>
+     </li>
+    </ul>
+   </div>
+  </div>
+ </section>
+
+ <!-- Adresa -->
+ <section id="adresa">
+  <h2>Adresa & mapa</h2>
+  <div class="grid grid-2">
+   <div class="card">
+    <p><strong>Riko Klub</strong><br>Pod Hájkem 1, 180&nbsp;00 Praha&nbsp;8 – Libeň<br>IČO: 76454274</p>
+    <p>Telefon: <a href="tel:+420737501635">+420 737 501 635</a><br>
+     E-mail: <a href="mailto:rikoklub@seznam.cz">rikoklub@seznam.cz</a></p>
+    <p>Na dotazy k rezervacím reagujeme nejrychleji telefonicky.</p>
+   </div>
+   <div class="card" style="padding:0; overflow:hidden">
+    <iframe
+            src="https://maps.google.com/maps?q=Pod%20H%C3%A1jkem%201%2C%20Praha&z=16&output=embed"
+            width="100%" height="400" style="border:0" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
+    </iframe>
+    &nbsp; Vstup z ulice Na Žertvách
+   </div>
+  </div>
+ </section>
+
+ <!--
+ <section id="menu">
+   <h2>Menu (PDF)</h2>
+   <div class="pdf-wrap">
+    <div class="pdf-toolbar">
+     <div>Vložený náhled PDF (menu.pdf)</div>
+     <div style="display:flex; gap:8px;">
+      <a class="btn" href="menu.pdf" target="_blank" rel="noopener">Otevřít v nové záložce</a>
+      <a class="btn" href="menu.pdf" download>Stáhnout PDF</a>
+     </div>
+    </div>
+    <object data="menu.pdf" type="application/pdf" class="pdf-frame">
+     <iframe src="menu.pdf" class="pdf-frame"></iframe>
+     <div style="padding:16px; font-size:14px; color:var(--muted);">
+      Nelze zobrazit PDF v prohlížeči. <a href="menu.pdf" target="_blank" rel="noopener">Otevřete</a> nebo <a href="menu.pdf" download>stáhněte</a> soubor.
+     </div>
+    </object>
+   </div>
+ </section>
+ -->
+
+ <!-- Galerie (automatická) -->
+ <section id="galerie">
+  <h2>Galerie</h2>
+  <div class="gallery-wrap">
+   <div class="carousel">
+    <img id="carousel-image" src="" alt="Galerie – aktuální snímek" loading="lazy">
+    <div class="nav">
+     <button id="prevBtn" type="button" aria-label="Předchozí">◀</button>
+     <button id="nextBtn" type="button" aria-label="Další">▶</button>
+    </div>
+   </div>
+   <div id="thumbs" class="thumbs"></div>
+  </div>
+ </section>
+</main>
+
+<footer>
+ <div class="container">© <span id="y"></span> Riko Klub. Všechna práva vyhrazena.</div>
+</footer>
+
+<script>
+ // Footer rok
+ document.getElementById('y').textContent = new Date().getFullYear();
+
+ // === Mobilní menu ===
+ (function(){
+   const btn = document.querySelector('.menu-toggle');
+   const panel = document.getElementById('mobileMenu');
+
+   function openMenu(){
+     panel.hidden = false;
+     panel.classList.add('open');
+     btn.setAttribute('aria-expanded','true');
+     document.body.style.overflow = 'hidden';
+   }
+   function closeMenu(){
+     panel.classList.remove('open');
+     btn.setAttribute('aria-expanded','false');
+     document.body.style.overflow = '';
+     // drobná prodleva, aby se mohl dohrát fade-out
+     setTimeout(()=>{ panel.hidden = true; }, 180);
+   }
+   btn.addEventListener('click', ()=>{
+     const expanded = btn.getAttribute('aria-expanded') === 'true';
+     expanded ? closeMenu() : openMenu();
+   });
+   panel.addEventListener('click', (e)=>{
+     if(e.target.tagName === 'A') closeMenu();
+   });
+   document.addEventListener('click', (e)=>{
+     if(!panel.hidden && !panel.contains(e.target) && e.target !== btn) closeMenu();
+   });
+   window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && !panel.hidden) closeMenu(); });
+ })();
+
+ // === Galerie – automatické načtení ===
+ (function initGallery(){
+  const base = './galerie/';
+  const thumbsEl = document.getElementById('thumbs');
+  const mainImg = document.getElementById('carousel-image');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const AUTOPLAY_MS = 5000;
+
+  let images = [];
+  let current = 0;
+  let timer = null;
+
+  function setImage(index){
+   if(!images.length) return;
+   current = (index + images.length) % images.length;
+   mainImg.src = images[current];
+   [...thumbsEl.children].forEach((t,i)=> t.classList.toggle('active', i===current));
+   restartAutoplay();
+  }
+  function restartAutoplay(){
+   if(timer) clearInterval(timer);
+   timer = setInterval(()=> setImage(current+1), AUTOPLAY_MS);
+  }
+  function renderThumbs(){
+   thumbsEl.innerHTML = '';
+   images.forEach((src, i)=>{
+    const d = document.createElement('div');
+    d.className = 'thumb' + (i===0 ? ' active':'');
+    const img = document.createElement('img');
+    img.src = src; img.alt = 'Náhled '+(i+1); img.loading = 'lazy';
+    d.appendChild(img);
+    d.addEventListener('click', ()=> setImage(i));
+    thumbsEl.appendChild(d);
+   });
+  }
+  async function loadFromManifest(){
+   try{
+    const res = await fetch(base + 'manifest.json', {cache:'no-store'});
+    if(!res.ok) return null;
+    const list = await res.json();
+    if(!Array.isArray(list) || !list.length) return null;
+    return list.map(n=> n.includes('/') ? n : (base + n));
+   }catch(_){ return null; }
+  }
+  async function loadByPattern(){
+   return [
+    `${base}bar.png`,
+    `${base}holokrci.jpg`,
+    `${base}logo_rikoklubu.jpg`
+   ];
+  }
+  async function bootstrap(){
+   images = await loadFromManifest();
+   if(!images || !images.length){
+    images = await loadByPattern();
+   }
+   if(!images.length){
+    images = ['data:image/svg+xml;charset=utf-8,'+encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
+             <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+               <stop offset="0%" stop-color="#0d1118"/><stop offset="100%" stop-color="#0a0e16"/>
+             </linearGradient></defs>
+             <rect width="100%" height="100%" fill="url(#g)"/>
+             <text x="50%" y="50%" text-anchor="middle" fill="#8aa0b2" font-family="system-ui,Segoe UI,Arial" font-size="36">
+               Nahrajte obrázky do ./galerie/
+             </text>
+           </svg>` )];
+   }
+   renderThumbs();
+   setImage(0);
+  }
+  prevBtn.addEventListener('click', ()=> setImage(current-1));
+  nextBtn.addEventListener('click', ()=> setImage(current+1));
+  window.addEventListener('keydown', (e)=> {
+   if(e.key==='ArrowLeft') setImage(current-1);
+   if(e.key==='ArrowRight') setImage(current+1);
+  });
+  bootstrap();
+ })();
+</script>
+</body>
+</html>
