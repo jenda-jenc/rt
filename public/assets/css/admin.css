@@ -1,0 +1,134 @@
+body.admin {
+  background: #0b0e14;
+  color: var(--text);
+}
+
+.admin-header {
+  background: #050608;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  padding: 16px 0;
+}
+
+.admin-header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-header nav a {
+  margin-left: 16px;
+  color: var(--accent);
+}
+
+.admin-main {
+  padding: 32px 0 60px;
+}
+
+.admin-card {
+  background: rgba(10, 14, 24, .85);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+
+.admin-card h2 {
+  margin-top: 0;
+}
+
+.admin-card h3 {
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+.admin-card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.admin-card table th,
+.admin-card table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.admin-card table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-card .inline {
+  display: inline-block;
+}
+
+.admin-card .inline button {
+  background: rgba(255, 255, 255, .1);
+  color: var(--text);
+  box-shadow: none;
+  padding: 6px 12px;
+}
+
+.admin-card .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.admin-card .stacked > label,
+.admin-card .stacked > .form-row {
+  margin-bottom: 12px;
+}
+
+.simple-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.simple-list li {
+  background: rgba(0, 0, 0, .25);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.simple-list li span {
+  color: var(--muted);
+  font-size: 14px;
+  display: block;
+  margin-top: 4px;
+}
+
+.simple-list li p {
+  margin: 6px 0 0;
+  color: var(--text);
+  max-width: 540px;
+  line-height: 1.5;
+}
+
+.alert {
+  background: rgba(255, 87, 127, .2);
+  border: 1px solid rgba(255, 87, 127, .5);
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .admin-header .container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .simple-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

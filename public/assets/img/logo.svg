@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">Riko Music Club</title>
+  <desc id="desc">Kulaté logo s mikrofonem, nápisem Riko a Music Club.</desc>
+  <circle cx="120" cy="120" r="108" fill="#050608" stroke="#ffffff" stroke-width="6" />
+  <text x="120" y="74" fill="#ffffff" font-family="'Montserrat', 'Segoe UI', sans-serif" font-size="38" font-weight="700" text-anchor="middle" letter-spacing="4">RIKO</text>
+  <g fill="#ffffff">
+    <rect x="96" y="84" width="48" height="60" rx="22" />
+    <rect x="100" y="148" width="40" height="12" rx="6" />
+    <rect x="112" y="160" width="16" height="26" rx="6" />
+    <path d="M72 128l-20 38 20-5-10 28 30-40-18 4 8-25z" />
+    <path d="M168 128l20 38-20-5 10 28-30-40 18 4-8-25z" />
+    <path d="M60 150h160l-14 44H74z" />
+  </g>
+  <g fill="#050608">
+    <rect x="112" y="96" width="16" height="4" rx="2" />
+    <rect x="112" y="110" width="16" height="4" rx="2" />
+    <rect x="112" y="124" width="16" height="4" rx="2" />
+    <text x="120" y="182" font-family="'Montserrat', 'Segoe UI', sans-serif" font-size="18" font-weight="700" text-anchor="middle" letter-spacing="2">MUSIC CLUB</text>
+  </g>
+</svg>

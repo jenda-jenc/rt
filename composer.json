@@ -1,0 +1,14 @@
+{
+    "name": "rikoklub/web",
+    "description": "Dynamicky spravovany web Riko Klub",
+    "type": "project",
+    "require": {
+        "php": "^8.4",
+        "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
